@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Be My Valentine 💘</title>
-
 <style>
     body {
         margin: 0;
@@ -15,12 +14,14 @@
         align-items: center;
         font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
         overflow: hidden;
-        text-align: center;
     }
 
     .container {
+        text-align: center;
+        width: 100%;
+        max-width: 900px;
         padding: 20px;
-        max-width: 90%;
+        position: relative;
     }
 
     h1 {
@@ -30,38 +31,46 @@
     }
 
     video {
-        width: min(300px, 80vw);
+        width: min(400px, 80vw);
         border-radius: 20px;
         margin-bottom: 20px;
     }
 
     .buttons {
         position: relative;
-        height: 200px;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        padding: 0 20px;
+        height: 150px;
     }
 
     button {
         padding: 15px 25px;
-        font-size: 1.1rem;
+        font-size: 1.2rem;
         border: none;
         border-radius: 999px;
         cursor: pointer;
         transition: transform 0.2s ease;
         touch-action: manipulation;
+        position: absolute;
     }
 
     #yesBtn {
         background: #ff2e63;
         color: white;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
         z-index: 2;
     }
 
     #noBtn {
         background: white;
         color: #333;
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
     }
 
     .hidden {
@@ -101,7 +110,6 @@
     <h2>You’re stuck with me now 😌</h2>
 </div>
 
-<!-- Sounds -->
 <audio id="popSound" src="https://www.myinstants.com/media/sounds/pop.mp3"></audio>
 <audio id="winSound" src="https://www.myinstants.com/media/sounds/anime-wow-sound-effect.mp3"></audio>
 
@@ -114,34 +122,28 @@
     const winSound = document.getElementById("winSound");
 
     let scale = 1;
-    let toxicTexts = [
-        "Missed 😏",
-        "Nah uh 😈",
-        "Too slow 😌",
-        "You sure? 💀",
-        "Just say yes already 💔",
-        "This is getting embarrassing 😭"
-    ];
-    let index = 0;
 
     function moveNoButton() {
-        const x = Math.random() * (window.innerWidth - 100);
-        const y = Math.random() * (window.innerHeight - 60);
+        const buttonWidth = noBtn.offsetWidth;
+        const buttonHeight = noBtn.offsetHeight;
+        const padding = 20; // safe space
+
+        const maxX = window.innerWidth - buttonWidth - padding;
+        const maxY = window.innerHeight - buttonHeight - padding;
+
+        const x = Math.random() * maxX;
+        const y = Math.random() * maxY;
 
         noBtn.style.left = `${x}px`;
         noBtn.style.top = `${y}px`;
 
-        noBtn.textContent = toxicTexts[index % toxicTexts.length];
-        index++;
-
         scale += 0.25;
-        yesBtn.style.transform = `scale(${scale})`;
+        yesBtn.style.transform = `translateY(-50%) scale(${scale})`;
 
         popSound.currentTime = 0;
         popSound.play();
     }
 
-    // Run away on hover AND touch
     noBtn.addEventListener("mouseenter", moveNoButton);
     noBtn.addEventListener("touchstart", moveNoButton);
 
@@ -160,7 +162,6 @@
             h.style.left = Math.random() * window.innerWidth + "px";
             h.style.top = Math.random() * window.innerHeight + "px";
             document.body.appendChild(h);
-
             setTimeout(() => h.remove(), 1000);
         }
         setTimeout(hearts, 500);
