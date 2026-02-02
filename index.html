@@ -2,76 +2,82 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Be My Valentine 💘</title>
+
 <style>
     body {
         margin: 0;
         height: 100vh;
-        background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+        background: linear-gradient(135deg, #ff758c, #ff7eb3);
         display: flex;
         justify-content: center;
         align-items: center;
-        font-family: 'Comic Sans MS', cursive, sans-serif;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
         overflow: hidden;
-    }
-
-    .container {
         text-align: center;
     }
 
-    h1 {
-        font-size: 3rem;
-        color: #fff;
-        margin-bottom: 20px;
+    .container {
+        padding: 20px;
+        max-width: 90%;
     }
 
-    video, img {
-        width: 300px;
+    h1 {
+        font-size: clamp(2rem, 6vw, 3rem);
+        color: white;
+        margin-bottom: 15px;
+    }
+
+    video {
+        width: min(300px, 80vw);
         border-radius: 20px;
         margin-bottom: 20px;
     }
 
     .buttons {
-        display: flex;
-        justify-content: center;
-        gap: 20px;
+        position: relative;
+        height: 200px;
     }
 
     button {
-        padding: 15px 30px;
-        font-size: 1.2rem;
+        padding: 15px 25px;
+        font-size: 1.1rem;
         border: none;
-        border-radius: 30px;
+        border-radius: 999px;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: transform 0.2s ease;
+        touch-action: manipulation;
     }
 
     #yesBtn {
-        background: #ff4d6d;
+        background: #ff2e63;
         color: white;
+        z-index: 2;
     }
 
     #noBtn {
-        background: #fff;
+        background: white;
         color: #333;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
     }
 
     .hidden {
         display: none;
     }
 
-    .firework {
+    .heart {
         position: absolute;
-        width: 10px;
-        height: 10px;
-        background: gold;
-        border-radius: 50%;
-        animation: explode 1s infinite;
+        font-size: 24px;
+        animation: pop 1s forwards;
+        pointer-events: none;
     }
 
-    @keyframes explode {
-        0% { transform: scale(1); opacity: 1; }
-        100% { transform: scale(3); opacity: 0; }
+    @keyframes pop {
+        0% { transform: scale(1) translateY(0); opacity: 1; }
+        100% { transform: scale(2) translateY(-60px); opacity: 0; }
     }
 </style>
 </head>
@@ -80,8 +86,7 @@
 <div class="container" id="main">
     <h1>Will you be my Valentine? 💘</h1>
 
-    <!-- Replace with your own video if you want -->
-    <video autoplay loop muted>
+    <video autoplay loop muted playsinline>
         <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
     </video>
 
@@ -92,51 +97,73 @@
 </div>
 
 <div class="container hidden" id="yay">
-    <h1>YAYYYY 🎉💖</h1>
-    <h2>You’re my Valentine 😘</h2>
+    <h1>YAYYYY 💖💖💖</h1>
+    <h2>You’re stuck with me now 😌</h2>
 </div>
+
+<!-- Sounds -->
+<audio id="popSound" src="https://www.myinstants.com/media/sounds/pop.mp3"></audio>
+<audio id="winSound" src="https://www.myinstants.com/media/sounds/anime-wow-sound-effect.mp3"></audio>
 
 <script>
     const yesBtn = document.getElementById("yesBtn");
     const noBtn = document.getElementById("noBtn");
     const main = document.getElementById("main");
     const yay = document.getElementById("yay");
+    const popSound = document.getElementById("popSound");
+    const winSound = document.getElementById("winSound");
 
     let scale = 1;
-    let noTexts = [
-        "Think again 😏",
-        "Are you sure? 🤨",
-        "Last chance 😳",
-        "Don’t do this 😭",
-        "Just press yes 💔"
+    let toxicTexts = [
+        "Missed 😏",
+        "Nah uh 😈",
+        "Too slow 😌",
+        "You sure? 💀",
+        "Just say yes already 💔",
+        "This is getting embarrassing 😭"
     ];
-    let noIndex = 0;
+    let index = 0;
 
-    noBtn.addEventListener("click", () => {
-        scale += 0.3;
+    function moveNoButton() {
+        const x = Math.random() * (window.innerWidth - 100);
+        const y = Math.random() * (window.innerHeight - 60);
+
+        noBtn.style.left = `${x}px`;
+        noBtn.style.top = `${y}px`;
+
+        noBtn.textContent = toxicTexts[index % toxicTexts.length];
+        index++;
+
+        scale += 0.25;
         yesBtn.style.transform = `scale(${scale})`;
 
-        noBtn.textContent = noTexts[noIndex % noTexts.length];
-        noIndex++;
-    });
+        popSound.currentTime = 0;
+        popSound.play();
+    }
+
+    // Run away on hover AND touch
+    noBtn.addEventListener("mouseenter", moveNoButton);
+    noBtn.addEventListener("touchstart", moveNoButton);
 
     yesBtn.addEventListener("click", () => {
         main.classList.add("hidden");
         yay.classList.remove("hidden");
-        fireworks();
+        winSound.play();
+        hearts();
     });
 
-    function fireworks() {
-        for (let i = 0; i < 30; i++) {
-            const f = document.createElement("div");
-            f.className = "firework";
-            f.style.left = Math.random() * window.innerWidth + "px";
-            f.style.top = Math.random() * window.innerHeight + "px";
-            document.body.appendChild(f);
+    function hearts() {
+        for (let i = 0; i < 40; i++) {
+            const h = document.createElement("div");
+            h.className = "heart";
+            h.textContent = "💖";
+            h.style.left = Math.random() * window.innerWidth + "px";
+            h.style.top = Math.random() * window.innerHeight + "px";
+            document.body.appendChild(h);
 
-            setTimeout(() => f.remove(), 1000);
+            setTimeout(() => h.remove(), 1000);
         }
-        setTimeout(fireworks, 500);
+        setTimeout(hearts, 500);
     }
 </script>
 
