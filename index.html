@@ -19,7 +19,7 @@
 
     h1 {
         font-size: 2.5rem;
-        color: white;
+        color: #fff;
         margin-bottom: 20px;
     }
 
@@ -81,7 +81,7 @@
 
 <div class="buttons">
     <button id="yesBtn">Yes 💖</button>
-    <button id="noBtn">No 😐</button>
+    <button id="noBtn">No 😭</button>
 </div>
 
 <div class="hidden" id="yay">
@@ -89,25 +89,40 @@
     <h2>You’re my Valentine 😘</h2>
 </div>
 
-<audio id="popSound" src="https://www.myinstants.com/media/sounds/pop.mp3"></audio>
+<!-- Sounds -->
+<audio id="crySound" src="https://www.myinstants.com/media/sounds/aww-sound-effect.mp3"></audio>
 <audio id="winSound" src="https://www.myinstants.com/media/sounds/anime-wow-sound-effect.mp3"></audio>
 
 <script>
     const yesBtn = document.getElementById("yesBtn");
     const noBtn = document.getElementById("noBtn");
     const yay = document.getElementById("yay");
-    const popSound = document.getElementById("popSound");
+    const crySound = document.getElementById("crySound");
     const winSound = document.getElementById("winSound");
 
     let scale = 1.0;
-    let noClicks = 0;
+    const noMessages = [
+        "Think again 😏",
+        "Are you sure? 🤨",
+        "Last chance 😳",
+        "Don't do this 😭",
+        "Press Yes 💔",
+        "You can't escape 💖"
+    ];
+    let clickCount = 0;
 
     noBtn.addEventListener("click", () => {
+        // Make Yes bigger
         scale += 0.2;
         yesBtn.style.transform = `scale(${scale})`;
-        noClicks++;
-        popSound.currentTime = 0;
-        popSound.play();
+
+        // Change No text
+        noBtn.textContent = noMessages[clickCount % noMessages.length];
+        clickCount++;
+
+        // Play cry sound
+        crySound.currentTime = 0;
+        crySound.play();
     });
 
     yesBtn.addEventListener("click", () => {
@@ -115,7 +130,11 @@
         document.querySelector("video").style.display = "none";
         document.querySelector(".buttons").style.display = "none";
         yay.classList.remove("hidden");
+
+        // Play win sound
         winSound.play();
+
+        // Show hearts
         showHearts();
     });
 
